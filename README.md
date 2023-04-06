@@ -1,2 +1,3 @@
-# kaggleCompetitions
-Repository for my Kaggle competitions
+# Kaggle Competitions 🏆
+Repository for my Kaggle competitions.
+## Titanic - Machine Learning from Disaster
