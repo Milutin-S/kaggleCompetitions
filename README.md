@@ -20,3 +20,7 @@ In statistics, EDA is an approach of analyzing data sets to summarize their main
   - Fare - Passenger fare / Ticker price - Number
   - Cabin - Cabin number - String
   - Embarked - Port of Embarkation - available C = Cherbourg, Q = Queenstown, S = Southampton - String
+
+#### Data preparation
+Merging train and test sets during cleaning data period.
+We will separate them before training and evaluation.
