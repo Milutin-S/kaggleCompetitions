@@ -5,8 +5,9 @@ Repository for my Kaggle competitions.
 You can find the dataset on the [Kaggles page](https://www.kaggle.com/competitions/titanic/data).
 
 ### 2. EDA - Exploratory Data Analysis
+In statistics, EDA is an approach of analyzing data sets to summarize their main characteristics, often using statistical graphics and other data visualization methods. Primarily EDA is for seeing what the data can tell us beyond the formal modeling and thereby contrasts traditional hypothesis testing.
 
-Features:
+#### Features:
   - PassengerId - Passenger ID - Number
   - Survived - Survived - Bool
   - Pclass - Ticket class - available 1 = 1st, 2 = 2nd, 3 = 3rd - Number
