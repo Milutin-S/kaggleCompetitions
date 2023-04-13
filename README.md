@@ -27,5 +27,5 @@ We will separate them before training and evaluation.
 
 #### Feature engineering
 FE is the process of selecting, manipulating, and transforming raw data into features that can be used later in learning. <br>
-Example: <br>
+__Example:__ <br>
 If we have data about prices of properties in x city. It shows area of the house and total price. We can create new data column to display the cost per square meters.
