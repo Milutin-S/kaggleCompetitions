@@ -24,3 +24,7 @@ In statistics, EDA is an approach of analyzing data sets to summarize their main
 #### Data preparation
 Merging train and test sets during cleaning data period.
 We will separate them before training and evaluation.
+
+#### Feature engineering
+FE is the process of selecting, manipulating, and transforming raw data into features that can be used later in learning.
+Example:
