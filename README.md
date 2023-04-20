@@ -29,3 +29,7 @@ We will separate them before training and evaluation.
 FE is the process of selecting, manipulating, and transforming raw data into features that can be used later in learning. <br>
 _Example:_ <br>
 If we have data about prices of properties in x city. It shows area of the house and total price. We can create new data column to display the cost per square meters.
+
+### 3. Train and validation
+Firstly we will compare simpler models and choose the best.
+Secondly, we will create neural network in PyTorch to try and get best prediction.
