@@ -16,16 +16,18 @@ def train(epoch:int):
     model.train()
     running_loss = 0.
     train_loss = 0.
-    total = 0
-    correct = 0
+    total = 0.
+    correct = 0.
 
     for i, (inputs, labels) in enumerate(train_loader, 0):
         inputs, labels = inputs.to(device), labels.to(device)
         optimizer.zero_grad()
         outputs = model(inputs)
+
         threshold_out = torch.where(outputs >= threshold, torch.ones_like(outputs), torch.zeros_like(outputs))
         correct += (threshold_out == labels).sum().item()
-        # correct += ((outputs >= 0.6).astype(int) == labels).sum().item()
+        total += labels.size(0)
+
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
@@ -38,7 +40,36 @@ def train(epoch:int):
             running_loss = 0.
     
     train_loss /= len(train_loader)
-    return train_loss
+    train_acc = correct/total
+    return train_loss, train_acc
+
+def test(epoch:int):
+    model.eval()
+    running_loss = 0.
+    test_loss = 0.
+    total = 0.
+    correct = 0.
+
+    with torch.no_grad():
+        for i, (inputs, labels), in enumerate(test_loader):
+            inputs, labels = inputs.to(device), labels.to(device)
+            outputs = model(inputs)
+
+            threshold_out = torch.where(outputs >= threshold, torch.ones_like(outputs), torch.zeros_like(outputs))
+            correct += (threshold_out == labels).sum().item()
+            total += labels.size(0)
+
+            loss = criterion(outputs, labels)
+            test_loss += loss.item()
+            running_loss += loss.item()
+            if i % 100 == 99:
+                print(f'[INFO] [{epoch + 1}, {i + 1:5d}] loss: {running_loss / 100:.3f}')
+                writer.add_scalar('Test Loss [per 100]', running_loss / 100, epoch * len(test_loader) + i)
+                running_loss = 0.
+        
+    test_loss /= len(test_loader)
+    test_acc = correct / total
+    return test_loss, test_acc
 
 def main(epoch_num:int=10):
     best_performance = None
@@ -49,7 +80,9 @@ def main(epoch_num:int=10):
 
     print(f"[INFO] TRAINING STARTED!")
     for epoch in tqdm(range(epoch_num)):
-        train_loss = train(epoch)
+        train_loss, train_acc = train(epoch)
+        test_loss, test_acc = test(epoch)
+
         print(f'[INFO] Epoch {epoch+1}/{epoch_num}, Train loss: {train_loss:.4f}, Test loss: {test_loss:.4f}')
         writer.add_scalar('Train Loss [epoch]', train_loss, epoch)
 
