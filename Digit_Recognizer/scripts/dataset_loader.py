@@ -21,7 +21,6 @@ class DigitDataset(Dataset):
         data = self.dataset.iloc[index]
         label, data = data[0], data[1:]
         data = np.reshape(np.array(data, dtype=np.float32), (28, 28))
-        # data = torch.FloatTensor(data)
         # data = data[1:]
 
         if self.transforms:
