@@ -4,6 +4,7 @@ Digit_Recognizer/Dataset
 Titanic/titanic_dataset
 Titanic/logs
 Titanic/models
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
