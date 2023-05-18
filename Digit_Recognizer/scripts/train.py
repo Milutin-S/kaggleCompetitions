@@ -18,6 +18,7 @@ from globals import (
     LEARNING_RATE,
     EPOCH_NUM,
     TRAIN_PATH,
+    TRAIN_TRANSFORMS,
 )
 
 
@@ -92,6 +93,7 @@ def main(validation_only: bool = False):
             torch.save(
                 model.state_dict(), model_dir.joinpath(f"epoch_{epoch}_weights.pth")
             )
+            print(f"    Best accuracy in {epoch} epoch saved.")
 
     print(f"[INFO] TRAINING FINISHED! 🏁")
 
@@ -124,13 +126,14 @@ if __name__ == "__main__":
     params_dir = PARAMETERS_DIR.joinpath(current_time)
     params_dir.mkdir(parents=True, exist_ok=True)
 
-    Create_Parameters_Metadata()
-
     model = Digit_Net()
+    model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-    dataset = DigitDataset(data_path=TRAIN_PATH)
+    Create_Parameters_Metadata()
+
+    dataset = DigitDataset(data_path=TRAIN_PATH, transforms=TRAIN_TRANSFORMS)
     dataset_size = dataset.__len__()
     train_size = int(0.9 * dataset_size)
     test_size = dataset_size - train_size
@@ -143,4 +146,4 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    main(EPOCH_NUM)
+    main()
