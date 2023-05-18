@@ -7,14 +7,15 @@ from globals import TRAIN_PATH, transforms
 import torch
 from torch.utils.data import DataLoader, Dataset
 
+
 class DigitDataset(Dataset):
-    def __init__(self, data_path:Path, transforms=None) -> None:
+    def __init__(self, data_path: Path, transforms=None) -> None:
         super().__init__()
         self.dataset = pd.read_csv(data_path)
         self.transforms = transforms
 
     def __len__(self):
-        return self.dataset.shape[0]
+        return len(self.dataset)
 
     def __getitem__(self, index):
         data = self.dataset.iloc[index]
@@ -27,14 +28,15 @@ class DigitDataset(Dataset):
 
         return data, label
 
-def data_viz(data, label, tile:bool=False):
+
+def data_viz(data, label, tile: bool = False):
     if tile:
         num_samples = data.shape[0]
-        plt_row = num_samples//2
+        plt_row = num_samples // 2
         plt_col = num_samples - plt_row
         for i in range(num_samples):
             img = data[i].squeeze()
-            plt.subplot(plt_row, plt_col, i+1)
+            plt.subplot(plt_row, plt_col, i + 1)
             plt.title("Label: " + str(int(label[i])))
             plt.imshow(img)
         plt.tight_layout()
@@ -43,8 +45,9 @@ def data_viz(data, label, tile:bool=False):
         plt.title("Label: " + str(int(label)))
         plt.imshow(img)
     plt.show()
-    
-if __name__ == '__main__':
+
+
+if __name__ == "__main__":
     # print(f"[INFO] Current working directory: {os.getcwdb()}")
     # set_cwdb = 'c:\\Users\\Studen\\Documents\\vscode_projects\\kaggleCompetitions\\'
     # print(f"[INFO] Changing working directory to: {set_cwdb}")
