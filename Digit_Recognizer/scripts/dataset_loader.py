@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-from globals import TRAIN_PATH, transforms
+from globals import TRAIN_PATH, TRAIN_TRANSFORMS
 
 import torch
 from torch.utils.data import DataLoader, Dataset
@@ -20,11 +20,12 @@ class DigitDataset(Dataset):
     def __getitem__(self, index):
         data = self.dataset.iloc[index]
         label, data = data[0], data[1:]
-        data = np.reshape(np.array(data, dtype=np.float16), (28, 28))
+        data = np.reshape(np.array(data, dtype=np.float32), (28, 28))
+        # data = torch.FloatTensor(data)
         # data = data[1:]
 
         if self.transforms:
-            data = transforms(data)
+            data = self.transforms(data)
 
         return data, label
 
@@ -52,12 +53,12 @@ if __name__ == "__main__":
     # set_cwdb = 'c:\\Users\\Studen\\Documents\\vscode_projects\\kaggleCompetitions\\'
     # print(f"[INFO] Changing working directory to: {set_cwdb}")
     # os.chdir(set_cwdb)
-    tarin_set = DigitDataset(TRAIN_PATH, transforms)
+    tarin_set = DigitDataset(TRAIN_PATH, TRAIN_TRANSFORMS)
     train_loader = DataLoader(tarin_set, batch_size=8, shuffle=False, num_workers=10)
 
     images, labels = next(iter(train_loader))
+    print(images.shape)
     data_viz(data=images, label=labels, tile=True)
     data_viz(data=images[0], label=labels[0])
-    print(images.shape)
 
     # print(tarin_set.__getitem__(0))
