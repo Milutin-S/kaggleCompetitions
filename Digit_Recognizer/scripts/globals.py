@@ -12,7 +12,7 @@ PARAMETERS_DIR.mkdir(parents=True, exist_ok=True)
 
 # CONSTS
 BATCH_SIZE = 16
-LEARNING_RATE = 1e-3
+LEARNING_RATE = 1e-4
 EPOCH_NUM = 100
 
 # TRAIN_TRANSFORMS = transforms.Compose(
