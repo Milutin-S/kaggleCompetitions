@@ -2,31 +2,35 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-from globals import TRAIN_PATH, TRAIN_TRANSFORMS
+from globals import TRAIN_PATH, TRAIN_TRANSFORMS, IMAGE_SHAPE
 
 import torch
 from torch.utils.data import DataLoader, Dataset
 
 
 class DigitDataset(Dataset):
-    def __init__(self, data_path: Path, transforms=None) -> None:
+    def __init__(self, data_path: Path, transforms=None, test: bool = False) -> None:
         super().__init__()
         self.dataset = pd.read_csv(data_path)
         self.transforms = transforms
+        self.test = test
 
     def __len__(self):
         return len(self.dataset)
 
     def __getitem__(self, index):
         data = self.dataset.iloc[index]
-        label, data = data[0], data[1:]
-        data = np.reshape(np.array(data, dtype=np.float32), (28, 28))
-        # data = data[1:]
+        if not self.test:
+            label, data = data[0], data[1:]
+        data = np.reshape(np.array(data, dtype=np.float32), IMAGE_SHAPE)
 
         if self.transforms:
             data = self.transforms(data)
 
-        return data, label
+        if self.test:
+            return data
+        else:
+            return data, label
 
 
 def data_viz(data, label, tile: bool = False):
