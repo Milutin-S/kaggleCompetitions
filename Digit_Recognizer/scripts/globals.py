@@ -2,6 +2,7 @@ from pathlib import Path
 import torchvision.transforms as transforms
 
 # PATHS
+PREDICTIONS_PATH = Path("./Digit_Recognizer\Predictions")
 TRAIN_PATH = Path("./Digit_Recognizer/Dataset/train.csv")
 TEST_PATH = Path("./Digit_Recognizer/Dataset/test.csv")
 OUTPUT_DIR = Path("./Digit_Recognizer/Train_Output")
@@ -14,6 +15,7 @@ PARAMETERS_DIR.mkdir(parents=True, exist_ok=True)
 BATCH_SIZE = 16
 LEARNING_RATE = 1e-4
 EPOCH_NUM = 100
+IMAGE_SHAPE = (28, 28)
 
 # TRAIN_TRANSFORMS = transforms.Compose(
 #     [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
