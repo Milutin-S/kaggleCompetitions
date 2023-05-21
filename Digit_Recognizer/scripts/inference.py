@@ -8,7 +8,9 @@ from pathlib import Path
 
 from nn import Digit_Net
 from dataset_loader import DigitDataset
-from globals import TEST_PATH, MODELS_DIR, PREDICTIONS_PATH, TRAIN_TRANSFORMS
+from globals import TEST_PATH, MODELS_DIR, PREDICTIONS_PATH
+
+# TODO: add time count for inference
 
 
 def get_best_weights(path: Path):
@@ -30,17 +32,22 @@ def run_inference(test_loader):
 
 def save_results(predictions, test_df):
     test_output = pd.DataFrame(
-        {"ImageId": test_df.index, "Label": predictions.cpu().astype(int)}
+        {"ImageId": test_df.index + 1, "Label": predictions.cpu().numpy().astype(int)}
+    )
+    output_path = (
+        PREDICTIONS_PATH
+        / f"model-date-{model_date}-epoch-{best_weights_path.name.split('_')[1]}.csv"
     )
     test_output.to_csv(
-        PREDICTIONS_PATH
-        / f"model-date-{model_date}-epoch-{best_weights_path.name.split('_')[1]}.csv",
+        output_path,
         index=False,
     )
 
+    print(f"[INFO] Successfully saved the results to: {output_path}")
+
 
 if __name__ == "__main__":
-    model_date = "21_04_29-18_05_2023"
+    model_date = "20_12_28-21_05_2023"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] Running device is: {device}")
 
@@ -49,7 +56,7 @@ if __name__ == "__main__":
     model.to(device)
     model.load_state_dict(torch.load(best_weights_path))
 
-    test_set = DigitDataset(data_path=TEST_PATH, transforms=TRAIN_TRANSFORMS, test=True)
+    test_set = DigitDataset(data_path=TEST_PATH, type="test")
 
     test_loader = DataLoader(test_set, batch_size=test_set.__len__(), shuffle=False)
     # print(test_set.__len__())
@@ -57,5 +64,7 @@ if __name__ == "__main__":
     test_loader.batch_sampler
 
     predictions = run_inference(test_loader)
-    print(predictions.shape)
-    print(predictions.cpu().numpy())
+    # print(predictions.shape)
+    # print(predictions.cpu().numpy())
+
+    save_results(predictions=predictions, test_df=test_set.dataset)
