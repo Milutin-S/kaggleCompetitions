@@ -21,6 +21,8 @@ from globals import (
     TRAIN_GENERAL_TRANSFORMS,
 )
 
+# TODO: Replace print in main with tqdm.write
+
 
 def train():
     model.train()
