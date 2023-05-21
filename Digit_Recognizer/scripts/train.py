@@ -18,7 +18,7 @@ from globals import (
     LEARNING_RATE,
     EPOCH_NUM,
     TRAIN_PATH,
-    TRAIN_TRANSFORMS,
+    TRAIN_GENERAL_TRANSFORMS,
 )
 
 
@@ -81,7 +81,9 @@ def main(validation_only: bool = False):
             print(f"    Train loss: {train_loss:.4f}, Train Accuracy: {train_acc:.2%}")
 
         test_loss, test_acc = test()
-        print(f"    Test loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2%}")
+        print(
+            f"    Test loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2%}"
+        )  # Replace with tqdm.write
 
         writer.add_scalar("Train Loss [epoch]", train_loss, epoch)
         writer.add_scalar("Test Loss [epoch]", test_loss, epoch)
@@ -133,7 +135,9 @@ if __name__ == "__main__":
 
     Create_Parameters_Metadata()
 
-    dataset = DigitDataset(data_path=TRAIN_PATH, transforms=TRAIN_TRANSFORMS)
+    dataset = DigitDataset(
+        data_path=TRAIN_PATH, transforms=TRAIN_GENERAL_TRANSFORMS, type="train"
+    )
     dataset_size = dataset.__len__()
     train_size = int(0.9 * dataset_size)
     test_size = dataset_size - train_size
