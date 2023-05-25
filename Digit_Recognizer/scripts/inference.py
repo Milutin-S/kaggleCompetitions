@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 
+import time
 import pandas as pd
 from natsort import natsorted
 from pathlib import Path
@@ -10,7 +11,7 @@ from nn import Digit_Net
 from dataset_loader import DigitDataset
 from globals import TEST_PATH, MODELS_DIR, PREDICTIONS_PATH
 
-# TODO: add time count for inference
+# TODO: add time count for inference ✅
 
 
 def get_best_weights(path: Path):
@@ -47,7 +48,7 @@ def save_results(predictions, test_df):
 
 
 if __name__ == "__main__":
-    model_date = "20_12_28-21_05_2023"
+    model_date = "15_21_25-25_05_2023"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] Running device is: {device}")
 
@@ -63,7 +64,10 @@ if __name__ == "__main__":
     # print(test_loader.batch_size)
     test_loader.batch_sampler
 
+    start_time = time.time()
     predictions = run_inference(test_loader)
+    duration = time.time() - start_time
+    print(f"[INFO] Inference time: {duration:.2f} s.")
     # print(predictions.shape)
     # print(predictions.cpu().numpy())
 
