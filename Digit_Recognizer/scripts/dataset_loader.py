@@ -18,6 +18,10 @@ from globals import (
 import torch
 from torch.utils.data import DataLoader, Dataset
 
+# TODO:
+# Ideas
+# 1. Shift one or more of the chanels before input to model
+
 
 class DigitDataset(Dataset):
     def __init__(self, data_path: Path, transforms=None, type: str = "train") -> None:
@@ -43,7 +47,7 @@ class DigitDataset(Dataset):
                 data = TRAIN_3_TRANSFORM(data)
             elif label == 8:
                 data = TRAIN_8_TRANSFORM(data)
-            elif label == 6 or label == 9:
+            elif (label == 6 or label == 9) and random.random() > RAND_TRESHOLD_69:
                 data = TRAIN_69_SWITCH(data)
                 if label == 6:
                     label = 9
