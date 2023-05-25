@@ -3,6 +3,9 @@ import torch.nn as nn
 import torchvision.models as models
 from torchsummary import summary
 
+# TODO:
+# 1. Revers droput to inital state, only one
+
 
 class Digit_Net(nn.Module):
     def __init__(self):
@@ -14,7 +17,7 @@ class Digit_Net(nn.Module):
         # print(resnet18)
         self.resnet18_core = nn.Sequential(*(list(resnet18.children())[:-1]))
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.dropout1 = nn.Dropout(p=0.25)
+        self.dropout1 = nn.Dropout(p=0.20)
         self.dropout2 = nn.Dropout(p=0.5)
 
         self.relu = nn.ReLU()
@@ -34,11 +37,11 @@ class Digit_Net(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.dropout1(x)
         x = self.relu(self.fc1(x))
-        x = self.dropout1(x)
+        # x = self.dropout1(x)
         x = self.relu(self.fc2(x))
-        x = self.dropout1(x)
+        # x = self.dropout1(x)
         x = self.relu(self.fc3(x))
-        x = self.dropout2(x)
+        # x = self.dropout2(x)
         x = self.softmax(x)
 
         return x
