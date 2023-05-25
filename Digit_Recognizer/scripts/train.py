@@ -89,6 +89,8 @@ def main(validation_only: bool = False):
             tqdm.write(
                 f"    Train loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4%}"
             )
+            writer.add_scalar("Train Loss [epoch]", train_loss, epoch)
+            writer.add_scalar("Train Accuracy epoch [%]", train_acc * 100, epoch)
         # We want for test to be original images
         transforms_switch(transforms=False)
         test_loss, test_acc = test()
@@ -98,9 +100,7 @@ def main(validation_only: bool = False):
             f"    Test loss: {test_loss:.4f}, Test Accuracy: {test_acc:.4%}"
         )  # Replace with tqdm.write
 
-        writer.add_scalar("Train Loss [epoch]", train_loss, epoch)
         writer.add_scalar("Test Loss [epoch]", test_loss, epoch)
-        writer.add_scalar("Train Accuracy epoch [%]", train_acc * 100, epoch)
         writer.add_scalar("Test Accuracy  epoch [%]", test_acc * 100, epoch)
 
         if best_accuracy is None or test_acc > best_accuracy:
