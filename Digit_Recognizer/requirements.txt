@@ -1,0 +1,5 @@
+tensorboard
+tensorsummary
+pandas
+tqdm
+matplotlib
