@@ -21,7 +21,13 @@ from globals import (
     TRAIN_GENERAL_TRANSFORMS,
 )
 
-# TODO: Replace print in main with tqdm.write
+# TODO:
+# 1. Replace print in main with tqdm.write ✅
+# 2. Rewrite setting transformation for validation through flag with method ✅
+# 3. Extract transforms with vars and save to json ❓
+# 4. try train wint higer batch size ✅
+# 5. Add continue from last epoch
+# 6. Add early stoppimg if accuaracy 100%
 
 
 def train():
@@ -75,16 +81,21 @@ def test():
 def main(validation_only: bool = False):
     best_accuracy = None
 
-    print(f"[INFO] TRAINING STARTED!🚀")
+    print(f"[INFO] TRAINING STARTED! 🚀")
     for epoch in tqdm(range(EPOCH_NUM)):
-        print(f"[INFO] Epoch {epoch+1}/{EPOCH_NUM}")
+        tqdm.write(f"[INFO] Epoch {epoch}/{EPOCH_NUM}")
         if not validation_only:
             train_loss, train_acc = train()
-            print(f"    Train loss: {train_loss:.4f}, Train Accuracy: {train_acc:.2%}")
-
+            tqdm.write(
+                f"    Train loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4%}"
+            )
+        # We want for test to be original images
+        transforms_switch(transforms=False)
         test_loss, test_acc = test()
-        print(
-            f"    Test loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2%}"
+        # Return the transformations
+        transforms_switch(transforms=True)
+        tqdm.write(
+            f"    Test loss: {test_loss:.4f}, Test Accuracy: {test_acc:.4%}"
         )  # Replace with tqdm.write
 
         writer.add_scalar("Train Loss [epoch]", train_loss, epoch)
@@ -97,9 +108,20 @@ def main(validation_only: bool = False):
             torch.save(
                 model.state_dict(), model_dir.joinpath(f"epoch_{epoch}_weights.pth")
             )
-            print(f"    Best accuracy in {epoch} epoch saved.")
+            tqdm.write(f"    Best accuracy in {epoch} epoch saved. ✅")
+        if best_accuracy > 0.999:
+            tqdm.write(f"    Reached 99.9% accuracy, canceling training. 🙌")
+            break
 
     print(f"[INFO] TRAINING FINISHED! 🏁")
+
+
+def transforms_switch(transforms: bool = True):
+    """Turn of data transforms when validating"""
+    if transforms:
+        test_dataset.dataset.transforms = TRAIN_GENERAL_TRANSFORMS
+    else:
+        test_dataset.dataset.transforms = None
 
 
 def Create_Parameters_Metadata():
