@@ -2,6 +2,7 @@
 Digit_Recognizer/Dataset
 Digit_Recognizer/Train_Output
 Digit_Recognizer/Predictions
+Digit_Recognizer/scripts/test.ipynb
 
 Titanic/titanic_dataset
 Titanic/logs

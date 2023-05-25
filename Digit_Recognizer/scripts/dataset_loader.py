@@ -43,7 +43,7 @@ class DigitDataset(Dataset):
                 data = TRAIN_3_TRANSFORM(data)
             elif label == 8:
                 data = TRAIN_8_TRANSFORM(data)
-            elif (label == 6 or label == 9) and random.random() > RAND_TRESHOLD_69:
+            elif label == 6 or label == 9:
                 data = TRAIN_69_SWITCH(data)
                 if label == 6:
                     label = 9
