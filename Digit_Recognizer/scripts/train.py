@@ -8,7 +8,7 @@ import time
 import json
 from tqdm import tqdm
 
-from nn import Digit_Net
+from nn import Digit_Net, Digit_Net2
 from dataset_loader import DigitDataset
 from globals import (
     OUTPUT_DIR,
@@ -118,10 +118,12 @@ def main(validation_only: bool = False):
 
 def transforms_switch(transforms: bool = True):
     """Turn of data transforms when validating"""
-    if transforms:
-        test_dataset.dataset.transforms = TRAIN_GENERAL_TRANSFORMS
-    else:
-        test_dataset.dataset.transforms = None
+    if not (dataset.transforms is None):
+        print("USAOOOOO, GASIII")
+        if transforms:
+            test_dataset.dataset.transforms = TRAIN_GENERAL_TRANSFORMS
+        else:
+            test_dataset.dataset.transforms = None
 
 
 def Create_Parameters_Metadata():
@@ -133,6 +135,8 @@ def Create_Parameters_Metadata():
         "batch_size": BATCH_SIZE,
         "optimizer": type(optimizer).__name__,
         "learning_rate": LEARNING_RATE,
+        "model_name": model.__class__.__name__,
+        "transforms": not (dataset.transforms is None),
     }
 
     with open(params_dir.joinpath("model_meta_data.json"), "w") as outfile:
@@ -152,16 +156,13 @@ if __name__ == "__main__":
     params_dir = PARAMETERS_DIR.joinpath(current_time)
     params_dir.mkdir(parents=True, exist_ok=True)
 
-    model = Digit_Net()
+    # model = Digit_Net()
+    model = Digit_Net2()
     model.to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
-    Create_Parameters_Metadata()
-
-    dataset = DigitDataset(
-        data_path=TRAIN_PATH, transforms=TRAIN_GENERAL_TRANSFORMS, type="train"
-    )
+    dataset = DigitDataset(data_path=TRAIN_PATH, type="train")
     dataset_size = dataset.__len__()
     train_size = int(0.9 * dataset_size)
     test_size = dataset_size - train_size
@@ -174,4 +175,5 @@ if __name__ == "__main__":
     train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
+    Create_Parameters_Metadata()
     main()
