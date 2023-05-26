@@ -7,7 +7,7 @@ import pandas as pd
 from natsort import natsorted
 from pathlib import Path
 
-from nn import Digit_Net
+from nn import Digit_Net, Digit_Net2
 from dataset_loader import DigitDataset
 from globals import TEST_PATH, MODELS_DIR, PREDICTIONS_PATH
 
@@ -21,12 +21,14 @@ def get_best_weights(path: Path):
 
 
 def run_inference(test_loader):
+    predictions = torch.empty(0).to(device)
     for inputs in test_loader:
         # print(inputs.shape)
         with torch.no_grad():
             inputs = inputs.to(device)
             outputs = model(inputs)
-            _, predictions = torch.max(outputs, 1)
+            _, temp_pred = torch.max(outputs, 1)
+            predictions = torch.cat((predictions, temp_pred), dim=0)
 
     return predictions
 
@@ -48,27 +50,31 @@ def save_results(predictions, test_df):
 
 
 if __name__ == "__main__":
-    model_date = "15_21_25-25_05_2023"
+    model_date = "12_43_16-26_05_2023"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] Running device is: {device}")
 
     best_weights_path = get_best_weights(MODELS_DIR.joinpath(model_date))
-    model = Digit_Net()
+    # model = Digit_Net()
+    model = Digit_Net2()
     model.to(device)
     model.load_state_dict(torch.load(best_weights_path))
 
     test_set = DigitDataset(data_path=TEST_PATH, type="test")
 
-    test_loader = DataLoader(test_set, batch_size=test_set.__len__(), shuffle=False)
+    test_loader = DataLoader(
+        test_set, batch_size=int(test_set.__len__() / 4), shuffle=False
+    )
     # print(test_set.__len__())
     # print(test_loader.batch_size)
-    test_loader.batch_sampler
+    # test_loader.batch_sampler
 
     start_time = time.time()
     predictions = run_inference(test_loader)
     duration = time.time() - start_time
     print(f"[INFO] Inference time: {duration:.2f} s.")
-    # print(predictions.shape)
-    # print(predictions.cpu().numpy())
+    print(predictions.shape)
+    print(type(predictions))
+    print(predictions.cpu().numpy())
 
     save_results(predictions=predictions, test_df=test_set.dataset)
