@@ -47,9 +47,39 @@ class Digit_Net(nn.Module):
         return x
 
 
+class Digit_Net2(nn.Module):
+    def __init__(self) -> None:
+        super(Digit_Net2, self).__init__()
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=2, padding=1, bias=False)
+        resnet18 = models.resnet18(weights=None)
+        self.resnet18_core = nn.Sequential(*(list(resnet18.children())[1:-4]))
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.dropout = nn.Dropout(p=0.20)
+        self.relu = nn.ReLU()
+        self.fc1 = nn.Linear(128, 64)
+        self.fc2 = nn.Linear(64, 32)
+        self.softmax = nn.Softmax(1)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.resnet18_core(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        x = self.relu(self.fc1(x))
+        x = self.dropout(x)
+        x = self.relu(self.fc2(x))
+        x = self.softmax(x)
+        return x
+
+
 if __name__ == "__main__":
     model = Digit_Net()
 
     print(model)
+    print("-" * 100)
+    summary(model.cuda(), (1, 28, 28))
     print("=" * 100)
+
+    model = Digit_Net2()
+    print(model)
     summary(model.cuda(), (1, 28, 28))
