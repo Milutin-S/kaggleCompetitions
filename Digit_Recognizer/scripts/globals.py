@@ -16,7 +16,7 @@ PARAMETERS_DIR.mkdir(parents=True, exist_ok=True)
 # CONSTS
 BATCH_SIZE = 32  # 64
 LEARNING_RATE = 1e-4  # 6e-5, 3e-5
-EPOCH_NUM = 100
+EPOCH_NUM = 100  # 200
 IMAGE_SHAPE = (28, 28)
 RAND_TRESHOLD_69 = 0.8
 
