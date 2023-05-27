@@ -54,7 +54,8 @@ class Digit_Net2(nn.Module):
         resnet18 = models.resnet18(weights=None)
         self.resnet18_core = nn.Sequential(*(list(resnet18.children())[1:-4]))
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.dropout = nn.Dropout(p=0.20)
+        self.dropout1 = nn.Dropout(p=0.4)
+        self.dropout2 = nn.Dropout(p=0.2)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(128, 64)
         self.fc2 = nn.Linear(64, 32)
@@ -66,8 +67,40 @@ class Digit_Net2(nn.Module):
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
         x = self.relu(self.fc1(x))
-        x = self.dropout(x)
+        x = self.dropout1(x)
         x = self.relu(self.fc2(x))
+        x = self.dropout2(x)
+        x = self.softmax(x)
+        return x
+
+
+class Digit_Net3(nn.Module):
+    def __init__(self) -> None:
+        super(Digit_Net3, self).__init__()
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, stride=2, padding=1, bias=False)
+        resnet18 = models.resnet18(weights=None)
+        self.resnet18_core = nn.Sequential(*(list(resnet18.children())[1:-3]))
+        self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
+        self.dropout1 = nn.Dropout(p=0.3)
+        self.dropout2 = nn.Dropout(p=0.2)
+        self.dropout3 = nn.Dropout(p=0.1)
+        self.relu = nn.ReLU()
+        self.fc1 = nn.Linear(256, 128)
+        self.fc2 = nn.Linear(128, 64)
+        self.fc3 = nn.Linear(64, 32)
+        self.softmax = nn.Softmax(1)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.resnet18_core(x)
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
+        x = self.relu(self.fc1(x))
+        x = self.dropout1(x)
+        x = self.relu(self.fc2(x))
+        x = self.dropout2(x)
+        x = self.relu(self.fc3(x))
+        x = self.dropout3(x)
         x = self.softmax(x)
         return x
 
