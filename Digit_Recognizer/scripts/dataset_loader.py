@@ -8,17 +8,6 @@ from globals import *
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-# #############
-# import importlib.util
-# import sys
-# spec = importlib.util.spec_from_file_location("globals", "C:\Users\Studen\Documents\vscode_projects\kaggleCompetitions\Digit_Recognizer\scripts\globals.py")
-# foo = importlib.util.module_from_spec(spec)
-# sys.modules["globals"] = foo
-# spec.loader.exec_module(foo)
-# foo.MyClass()
-# ###################
-
-
 # TODO:
 # Ideas
 # 1. Shift one or more of the chanels before input to model
@@ -42,8 +31,6 @@ class DigitDataset(Dataset):
             label, data = data[0], data[1:]
         data = np.reshape(np.array(data, dtype=np.uint8), IMAGE_SHAPE)
         data = REQUIRED_TRANSFORMS(data)
-        # transform = transforms.ToTensor()
-        # data = transform(data)
 
         if self.transforms and self.type == "train":
             data, label = apply_transforms(data, label)
@@ -75,10 +62,6 @@ def data_viz(data, label, tile: bool = False):
 
 
 if __name__ == "__main__":
-    # print(f"[INFO] Current working directory: {os.getcwdb()}")
-    # set_cwdb = 'c:\\Users\\Studen\\Documents\\vscode_projects\\kaggleCompetitions\\'
-    # print(f"[INFO] Changing working directory to: {set_cwdb}")
-    # os.chdir(set_cwdb)
     train_set = DigitDataset(TRAIN_PATH, type="train")
     train_loader = DataLoader(train_set, batch_size=16, shuffle=False, num_workers=10)
 
@@ -88,6 +71,3 @@ if __name__ == "__main__":
     )
     print(images.shape)
     data_viz(data=images, label=labels, tile=True)
-    # data_viz(data=images[0], label=labels[0])
-
-    # print(tarin_set.__getitem__(0))
